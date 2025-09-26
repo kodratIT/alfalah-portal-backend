@@ -8,10 +8,12 @@ use Illuminate\Http\Request;
 
 class BeritaController extends Controller
 {
+
         // GET /api/berita
-    public function index()
+    public function index(Request $request)
     {
-        $berita = Berita::latest()->paginate(3); 
+        $perPage = $request->get('limit', 9);
+        $berita = Berita::latest()->paginate($perPage);
 
         return response()->json([
             'success' => true,
@@ -19,10 +21,10 @@ class BeritaController extends Controller
         ]);
     }
 
-    // GET /api/berita/{id}
-    public function show($id)
+    // GET /api/berita/{slug}
+    public function show($slug)
     {
-        $berita = Berita::find($id);
+        $berita = Berita::where('slug', $slug)->first();
 
         if (!$berita) {
             return response()->json([
