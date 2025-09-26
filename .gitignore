@@ -1,0 +1,50 @@
+# Created by https://www.gitignore.io/api/laravel
+
+### Laravel ###
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+.env.example
+.env.testing
+
+### Laravel ###
+/bootstrap/cache/*
+!.bootstrap/cache/.gitignore
+
+### Laravel - PHPStorm ###
+.idea
+
+### Laravel - JetBrains ###
+.idea
+*.iws
+*.iml
+.vscode
+
+### Laravel - SublimeText ###
+.sublime-project
+.sublime-workspace
+
+### Laravel - VSCode ###
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+### Laravel - Windows ###
+Thumbs.db
+ehthumbs.db
+
+### Laravel - macOS ###
+.DS_Store
+
+### Laravel - JetBrains ###
+.idea
+*.iws
+*.iml
