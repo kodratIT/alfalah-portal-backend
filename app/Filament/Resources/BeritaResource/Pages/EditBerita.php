@@ -3,10 +3,8 @@
 namespace App\Filament\Resources\BeritaResource\Pages;
 
 use App\Filament\Resources\BeritaResource;
-use App\Services\ImageCompressionService;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class EditBerita extends EditRecord
@@ -24,20 +22,5 @@ class EditBerita extends EditRecord
                     }
                 }),
         ];
-    }
-
-    protected function afterSave(): void
-    {
-        // Compress thumbnail if it was updated
-        if ($this->record->thumbnail) {
-            $compressed = ImageCompressionService::compress($this->record->thumbnail, 'public', 500);
-            
-            if ($compressed) {
-                Notification::make()
-                    ->title('Perubahan berhasil disimpan')
-                    ->success()
-                    ->send();
-            }
-        }
     }
 }

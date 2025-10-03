@@ -70,7 +70,12 @@ class BeritaResource extends Resource
                         ->image()
                         ->directory('berita')
                         ->maxSize(2048)
-                        ->helperText('Maksimal 2MB. Gambar akan otomatis dikompres setelah disimpan')
+                        ->optimize('jpg')
+                        ->resize(1200, null, function ($constraint) {
+                            $constraint->aspectRatio();
+                            $constraint->upsize();
+                        })
+                        ->helperText('Maksimal 2MB. Gambar akan otomatis dikompres dan dioptimasi')
                         ->required(),
                 ])->columns(2),
 
