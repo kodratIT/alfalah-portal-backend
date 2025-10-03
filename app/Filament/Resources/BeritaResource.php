@@ -18,7 +18,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\BadgeColumn;
+
 
 class BeritaResource extends Resource
 {
@@ -66,19 +66,24 @@ class BeritaResource extends Resource
                         ->required(),
 
                     FileUpload::make('thumbnail')
-                        ->label('Thumbnail')
+                        ->label('Thumbnail Berita')
                         ->image()
                         ->directory('berita')
-                        ->imageEditor()
+                        ->disk('public')
+                        ->maxSize(2048)
+                        ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
+                        ->helperText('Maksimal 2MB. Gambar akan otomatis dikompres menjadi ~500KB')
                         ->required(),
                 ])->columns(2),
 
             Section::make('Konten Berita')
                 ->schema([
-                    RichEditor::make('konten')
+                    Textarea::make('konten')
                         ->label('Isi Berita')
                         ->required()
-                        ->fileAttachmentsDirectory('berita/files'),
+                        ->rows(10)
+                        ->columnSpanFull()
+                        ->helperText('Gunakan HTML tags untuk formatting: <p>, <b>, <i>, <br>, <ul>, <li>'),
                 ])
         ]);
     }
@@ -101,13 +106,15 @@ class BeritaResource extends Resource
                 ->searchable()
                 ->limit(50),
 
-            BadgeColumn::make('kategori')
+            TextColumn::make('kategori')
                 ->label('Kategori')
-                ->colors([
-                    'success' => 'Prestasi',
-                    'warning' => 'Kegiatan',
-                    'info' => 'Akademik',
-                ]),
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'Prestasi' => 'success',
+                    'Kegiatan' => 'warning',
+                    'Akademik' => 'info',
+                    default => 'gray',
+                }),
 
             TextColumn::make('penulis')->label('Penulis'),
 

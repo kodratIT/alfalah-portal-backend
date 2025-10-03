@@ -3,8 +3,11 @@
 namespace App\Filament\Resources\BeritaResource\Pages;
 
 use App\Filament\Resources\BeritaResource;
+use App\Services\ImageCompressionService;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Storage;
 
 class EditBerita extends EditRecord
 {
@@ -13,7 +16,29 @@ class EditBerita extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->after(function () {
+                    // Delete old thumbnail when deleting record
+                    if ($this->record->thumbnail && Storage::disk('public')->exists($this->record->thumbnail)) {
+                        Storage::disk('public')->delete($this->record->thumbnail);
+                    }
+                }),
         ];
+    }
+
+    protected function afterSave(): void
+    {
+        // Compress thumbnail if it was updated
+        if ($this->record->thumbnail) {
+            $compressed = ImageCompressionService::compress($this->record->thumbnail, 'public', 500);
+            
+            if ($compressed) {
+                Notification::make()
+                    ->title('Perubahan berhasil disimpan')
+                    ->body('Gambar thumbnail telah dikompres untuk optimasi.')
+                    ->success()
+                    ->send();
+            }
+        }
     }
 }
