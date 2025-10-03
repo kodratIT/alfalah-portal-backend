@@ -13,7 +13,9 @@ class BeritaController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('limit', 9);
-        $berita = Berita::latest()->paginate($perPage);
+        $berita = Berita::select('id', 'judul', 'slug', 'kategori', 'tanggal', 'penulis', 'thumbnail', 'konten', 'created_at')
+            ->latest()
+            ->paginate($perPage);
 
         return response()->json([
             'success' => true,

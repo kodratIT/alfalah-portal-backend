@@ -23,6 +23,14 @@ class Berita extends Model
         'tanggal' => 'date',
     ];
 
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     public static function boot()
     {
         parent::boot();

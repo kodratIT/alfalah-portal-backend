@@ -19,7 +19,7 @@ Route::prefix('api')->group(function () {
     Route::get('/v2/programs', [ProgramController::class, 'index']);
     Route::get('/testimonials', [TestimonialController::class, 'show']);
     Route::get('/berita', [BeritaController::class, 'index']);
-    Route::get('/berita/{slug}', [BeritaController::class, 'show']);
+    Route::get('/berita/{slug}', [BeritaController::class, 'show'])->where('slug', '[a-z0-9-]+');
     Route::get('/contact', [ContactInfoController::class, 'show']);
 });
 
