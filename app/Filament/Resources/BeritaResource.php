@@ -70,8 +70,6 @@ class BeritaResource extends Resource
                         ->image()
                         ->directory('berita')
                         ->maxSize(512)
-                        ->optimize('jpg')
-                        ->acceptedFileTypes(['image/png', 'image/jpg'])
                         ->helperText('Maksimal 512KB. Hanya PNG/JPG')
                         ->required(),
                 ])->columns(2),
