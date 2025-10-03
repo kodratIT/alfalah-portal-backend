@@ -71,8 +71,8 @@ class BeritaResource extends Resource
                         ->directory('berita')
                         ->maxSize(5000)
                         ->optimize('jpg')
-                        ->acceptedFileTypes(['image/jpeg', 'image/png'])
-                        ->helperText('Maksimal 2MB. Gambar akan otomatis dikompres')
+                        ->acceptedFileTypes(['image/png'])
+                        ->helperText('Maksimal 5MB. Hanya PNG. Akan otomatis dikonversi ke JPG')
                         ->required(),
                 ])->columns(2),
 
