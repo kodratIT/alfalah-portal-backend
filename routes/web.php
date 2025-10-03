@@ -179,9 +179,14 @@ Route::get('/berita/{slug}', function ($slug) {
         ? Str::limit($normalized, 160, '...')
         : 'Baca berita terkini dari Pondok Pesantren Jauharul Falah Al-Islamy.';
 
-    $imageUrl = $berita->thumbnail
-        ? route('social-image', ['slug' => $berita->slug])
-        : asset('ui/images/logo.png');
+    // Use direct storage URL instead of dynamic route for better reliability
+    if ($berita->thumbnail) {
+        $thumbnailPath = ltrim((string) $berita->thumbnail, '/');
+        $thumbnailPath = preg_replace('#^(public/|storage/)#', '', $thumbnailPath);
+        $imageUrl = $baseUrl . '/storage/' . $thumbnailPath;
+    } else {
+        $imageUrl = asset('ui/images/logo.png');
+    }
 
     $title = $berita->judul . ' | Pondok Pesantren Jauharul Falah Al-Islamy';
 
