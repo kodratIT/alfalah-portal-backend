@@ -35,7 +35,6 @@ class EditBerita extends EditRecord
             if ($compressed) {
                 Notification::make()
                     ->title('Perubahan berhasil disimpan')
-                    ->body('Gambar thumbnail telah dikompres untuk optimasi.')
                     ->success()
                     ->send();
             }

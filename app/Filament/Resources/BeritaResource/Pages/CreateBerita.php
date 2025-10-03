@@ -21,7 +21,6 @@ class CreateBerita extends CreateRecord
             if ($compressed) {
                 Notification::make()
                     ->title('Berita berhasil disimpan')
-                    ->body('Gambar thumbnail telah dikompres untuk optimasi.')
                     ->success()
                     ->send();
             }
