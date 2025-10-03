@@ -69,10 +69,10 @@ class BeritaResource extends Resource
                         ->label('Thumbnail Berita')
                         ->image()
                         ->directory('berita')
-                        ->maxSize(5000)
+                        ->maxSize(512)
                         ->optimize('jpg')
                         ->acceptedFileTypes(['image/png'])
-                        ->helperText('Maksimal 5MB. Hanya PNG. Akan otomatis dikonversi ke JPG')
+                        ->helperText('Maksimal 512KB. Hanya PNG. Akan otomatis dikonversi ke JPG')
                         ->required(),
                 ])->columns(2),
 
