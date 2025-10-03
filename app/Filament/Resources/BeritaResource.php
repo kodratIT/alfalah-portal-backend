@@ -76,12 +76,28 @@ class BeritaResource extends Resource
 
             Section::make('Konten Berita')
                 ->schema([
-                    Textarea::make('konten')
+                    RichEditor::make('konten')
                         ->label('Isi Berita')
                         ->required()
-                        ->rows(10)
                         ->columnSpanFull()
-                        ->helperText('Gunakan HTML tags untuk formatting: <p>, <b>, <i>, <br>, <ul>, <li>'),
+                        ->toolbarButtons([
+                            'attachFiles',
+                            'blockquote',
+                            'bold',
+                            'bulletList',
+                            'codeBlock',
+                            'h2',
+                            'h3',
+                            'italic',
+                            'link',
+                            'orderedList',
+                            'redo',
+                            'strike',
+                            'underline',
+                            'undo',
+                        ])
+                        ->fileAttachmentsDirectory('berita/attachments')
+                        ->fileAttachmentsVisibility('public'),
                 ])
         ]);
     }
