@@ -311,45 +311,62 @@ HTML;
 Route::get('/social-image/{slug}.jpg', function ($slug) {
     $berita = Berita::where('slug', $slug)->first();
 
-    if (!$berita) {
-        abort(404);
+    if (!$berita || !$berita->thumbnail) {
+        abort(404, 'Berita or thumbnail not found');
     }
 
-    $thumbnail = $berita->thumbnail ?? '';
-    $thumbnail = ltrim((string) $thumbnail, '/');
-
-    $basePath = storage_path('app/public/');
-
-    if (Str::startsWith($thumbnail, 'public/')) {
-        $thumbnail = Str::after($thumbnail, 'public/');
-    } elseif (Str::startsWith($thumbnail, 'storage/')) {
-        $thumbnail = Str::after($thumbnail, 'storage/');
+    // Clean thumbnail path
+    $thumbnail = ltrim((string) $berita->thumbnail, '/');
+    
+    // Remove prefixes if present
+    $thumbnail = preg_replace('#^(public/|storage/)#', '', $thumbnail);
+    
+    // Build source path - check multiple possible locations
+    $possiblePaths = [
+        storage_path('app/public/' . $thumbnail),
+        storage_path('app/' . $thumbnail),
+        public_path('storage/' . $thumbnail),
+    ];
+    
+    $sourcePath = null;
+    foreach ($possiblePaths as $path) {
+        if (File::exists($path)) {
+            $sourcePath = $path;
+            break;
+        }
+    }
+    
+    if (!$sourcePath) {
+        \Log::error('Social image source not found', [
+            'slug' => $slug,
+            'thumbnail' => $berita->thumbnail,
+            'checked_paths' => $possiblePaths
+        ]);
+        abort(404, 'Image file not found');
     }
 
-    $sourcePath = $basePath . $thumbnail;
-
-    if (!File::exists($sourcePath)) {
-        abort(404);
-    }
-
-    $cacheDir = $basePath . 'social';
+    // Cache directory for optimized social images
+    $cacheDir = storage_path('app/public/social');
     File::ensureDirectoryExists($cacheDir);
 
     $cachePath = $cacheDir . '/' . $slug . '.jpg';
 
+    // Generate optimized social image if not cached
     if (!File::exists($cachePath)) {
         $generated = \generate_social_image($sourcePath, $cachePath);
 
         if (!$generated) {
+            // Fallback: serve original image if generation fails
             return response()->file($sourcePath, [
-                'Cache-Control' => 'public, max-age=604800',
+                'Cache-Control' => 'public, max-age=604800, immutable',
                 'Content-Type' => File::mimeType($sourcePath) ?? 'image/jpeg',
             ]);
         }
     }
 
+    // Serve cached optimized image
     return response()->file($cachePath, [
-        'Cache-Control' => 'public, max-age=604800',
+        'Cache-Control' => 'public, max-age=2592000, immutable', // 30 days
         'Content-Type' => 'image/jpeg',
     ]);
 })->where('slug', '[A-Za-z0-9\-_.]+')->name('social-image');
